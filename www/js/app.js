@@ -16,27 +16,53 @@ define(function(require) {
 
 
     function formatDate(d) {
-        return (d.getMonth()+1) + '/' +
-            d.getDate() + '/' +
+        return (    d.getDate() + '/' +
+	d.getMonth()+1) + '/' +        
             d.getFullYear();
     }
 
     // List view
 
-    var list = $('.list').get(0);
-    list.add({ title: 'Learn this template',
-               desc: 'This is a list-detail template. Learn more ' +
-                     'about it at its ' +
-                     '<a href="https://github.com/mozilla/mortar-list-detail">project page!</a>',
-               date: new Date() });
-    list.add({ title: 'Make things',
-               desc: 'Make this look like that',
-               date: new Date(12, 9, 5) });
-    for(var i=0; i<8; i++) {
-        list.add({ title: 'Move stuff',
-                   desc: 'Move this over there',
-                   date: new Date(12, 10, 1) });
+    var list = $('.list').get(0);    
+    var quote;
+	
+    var request = new XMLHttpRequest();
+    request.open('GET', 'http://dashboard.koha-community.org/rq', false);
+    request.send(); // because of "false" above, will block until the request is done
+                    // and status is available. Not recommended, however it works for simple cases.
+
+    if (request.status === 200) {
+      quote = request.responseText;
     }
+
+    var bugs;
+    
+    request.close
+    request.open('GET', 'http://dashboard.koha-community.org/bug_status', false);
+    request.send();
+    if (request.status === 200) {
+          bugs = request.responseText;
+	      }
+     var signoff;
+    request.close
+    request.open('GET', 'http://dashboard.koha-community.org/needsignoff', false);
+    request.send();
+    if (request.status === 200) {
+          signoff = request.responseText;
+	      }
+    
+    
+    list.add({ title: 'Random Quote',
+               desc: quote,
+               date: new Date() });
+    list.add({ title: 'Bug statuses',
+               desc: bugs,
+	       date: new Date() });
+    list.add({ title: 'Needing signoff',
+               desc: signoff,
+	       date: new Date() });
+	       
+    
 
     // Detail view
 
