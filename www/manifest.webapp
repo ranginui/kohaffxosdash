@@ -12,5 +12,6 @@
     "name": "Chris Cormack",
     "url": "http://dashboard.koha-community.org/app/"
   },
-  "installs_allowed_from": ["*"]
+  "installs_allowed_from": ["*"],
+  "appcache_path": "/app/www/cache.manifest"
 }

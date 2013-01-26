@@ -25,31 +25,43 @@ define(function(require) {
 
     var list = $('.list').get(0);    
     var quote;
-	
-    var request = new XMLHttpRequest();
-    request.open('GET', 'http://dashboard.koha-community.org/rq', false);
-    request.send(); // because of "false" above, will block until the request is done
+    
+    function getdata(url) {
+        var request = new XMLHttpRequest();    
+	request.open('GET', url, false);
+	request.send(); // because of "false" above, will block until the request is done
                     // and status is available. Not recommended, however it works for simple cases.
+	if (request.status === 200) {
+           return request.responseText;
+        }
+	request.close
+    }    
 
-    if (request.status === 200) {
-      quote = request.responseText;
+    if (localStorage.getItem("quote")){
+	quote = localStorage.getItem("quote");
+    }
+    else {
+        quote = getdata('http://dashboard.koha-community.org/rq');
+        localStorage.setItem("quote", quote);
     }
 
     var bugs;
+    if (localStorage.getItem("bugs")){
+	bugs = localStorage.getItem("bugs");
+    }
+    else {
+        bugs = getdata('http://dashboard.koha-community.org/bug_status');
+        localStorage.setItem("bugs", bugs);
+    }
     
-    request.close
-    request.open('GET', 'http://dashboard.koha-community.org/bug_status', false);
-    request.send();
-    if (request.status === 200) {
-          bugs = request.responseText;
-	      }
-     var signoff;
-    request.close
-    request.open('GET', 'http://dashboard.koha-community.org/needsignoff', false);
-    request.send();
-    if (request.status === 200) {
-          signoff = request.responseText;
-	      }
+    var signoff;
+    if (localStorage.getItem("signoff")){
+	signoff = localStorage.getItem("signoff");
+    }
+    else {
+        signoff = getdata('http://dashboard.koha-community.org/needsignoff');
+        localStorage.setItem("signoff", signoff);
+    }
     
     
     list.add({ title: 'Random Quote',
